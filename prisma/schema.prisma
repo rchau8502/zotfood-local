@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  displayName String?
+  photoURL    String?
+  createdAt   DateTime @default(now())
+  lastActive  DateTime @default(now())
+
+  pantry        PantryItem[]
+  progress      UserProgress[]
+  achievements  AchievementUnlock[]
+  favorites     Favorite[]
+  submissions   Submission[]
+  comments      Comment[]
+  recipes       Recipe[]
+}
+
+model Ingredient {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  category String
+  unit     String?
+  image    String?
+  tips     String?
+
+  recipes  RecipeIngredient[]
+  pantry   PantryItem[]
+}
+
+model Recipe {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  image       String?
+  minutes     Int
+  costCents   Int
+  servings    Int
+  tools       String
+  tags        String
+  createdById String?
+  approved    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  creator      User?     @relation(fields: [createdById], references: [id])
+  steps        Step[]
+  ingredients  RecipeIngredient[]
+  favorites    Favorite[]
+  comments     Comment[]
+
+  @@index([approved, costCents, minutes])
+}
+
+model Step {
+  id        String  @id @default(cuid())
+  recipeId  String
+  index     Int
+  text      String
+  timerSec  Int?
+  media     String?
+
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, index])
+}
+
+model RecipeIngredient {
+  id           String  @id @default(cuid())
+  recipeId     String
+  ingredientId String
+  quantity     Float
+  unit         String?
+  notes        String?
+
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+}
+
+model PantryItem {
+  id           String  @id @default(cuid())
+  userId       String
+  ingredientId String
+  amount       Float?
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([userId, ingredientId])
+}
+
+model Skill {
+  id    String @id @default(cuid())
+  title String
+  slug  String @unique
+  order Int
+
+  lessons Lesson[]
+}
+
+model Lesson {
+  id        String   @id @default(cuid())
+  skillId   String
+  title     String
+  slug      String
+  order     Int
+  contentMd String
+  quizJson  String
+
+  skill    Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  progress UserProgress[]
+
+  @@unique([skillId, slug])
+}
+
+model UserProgress {
+  id         String   @id @default(cuid())
+  userId     String
+  lessonId   String
+  xp         Int      @default(0)
+  completed  Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model Achievement {
+  id    String @id @default(cuid())
+  code  String @unique
+  name  String
+  desc  String
+  icon  String?
+
+  unlocks AchievementUnlock[]
+}
+
+model AchievementUnlock {
+  id             String   @id @default(cuid())
+  userId         String
+  achievementId  String
+  createdAt      DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement  @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  recipeId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  bodyMd    String
+  image     String?
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  recipeId  String
+  body      String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+}
