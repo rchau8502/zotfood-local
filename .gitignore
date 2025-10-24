@@ -1,7 +1,16 @@
+# deps & build
 node_modules/
 .next/
+.out/
+dist/
+.vercel/
+.turbo/
+
+# env & local data
 .env
-zotfood.db
-uploads/
-pnpm-lock.yaml
+.env.*.local
+prisma/zotfood.db
+
+# os/junk
 .DS_Store
+*.log
