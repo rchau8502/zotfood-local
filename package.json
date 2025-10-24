@@ -9,8 +9,11 @@
     "setup": "bash scripts/dev-bootstrap.sh",
     "prisma:studio": "prisma studio",
     "test": "vitest run",
-    "seed": "prisma db seed"
-
+    "test:watch": "vitest run --watch",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "seed": "prisma db seed",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@prisma/client": "^5.19.1",
