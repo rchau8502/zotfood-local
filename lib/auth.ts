@@ -30,5 +30,20 @@ const credentials = CredentialsProvider({
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [credentials],
   session: { strategy: "jwt" },
-  // callbacks/pages optional
+  pages: {
+    signIn: "/api/auth/signin",
+    signOut: "/",
+  },
+  callbacks: {
+    async redirect({ url, baseUrl }) {
+      // After sign out, redirect to home page
+      if (url === baseUrl + "/api/auth/signout") {
+        return baseUrl;
+      }
+      // After sign in, redirect to dashboard
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl + "/dashboard";
+    },
+  },
 });

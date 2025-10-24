@@ -1,11 +1,12 @@
 "use server";
 
 import { signIn, signOut } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export async function signInAction() {
-  await signIn();            // You can pass options if you want a specific callbackUrl
+  await signIn(undefined, { callbackUrl: "/dashboard" });
 }
 
 export async function signOutAction() {
-  await signOut();
+  await signOut({ redirectTo: "/" });
 }
