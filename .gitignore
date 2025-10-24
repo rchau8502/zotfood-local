@@ -1,16 +1,8 @@
-# deps & build
 node_modules/
 .next/
-.out/
-dist/
 .vercel/
-.turbo/
-
-# env & local data
-.env
-.env.*.local
-prisma/zotfood.db
-
-# os/junk
-.DS_Store
+dist/
+out/
 *.log
+.DS_Store
+prisma/zotfood.db
