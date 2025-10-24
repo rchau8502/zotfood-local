@@ -1,17 +1,17 @@
-'use client'
-import { useEffect, useState } from 'react'
+"use client";
 
-export default function Streak(){
-  const [data, setData] = useState<{displayName:string, streak:number, xp:number} | null>(null)
-  useEffect(()=>{ (async()=>{
-    const res = await fetch('/api/me')
-    setData(await res.json())
-  })() },[])
-  if (!data) return <div className="border rounded-lg p-3">Loading…</div>
+import { useEffect, useState } from "react";
+
+export default function Streak() {
+  const [streak, setStreak] = useState(0);
+
+  // TODO: replace with real fetch from your DB/session
+  useEffect(() => setStreak(3), []);
+
   return (
-    <div className="border rounded-lg p-3 flex items-center justify-between">
-      <div>🔥 <b>{data.streak}</b> day streak</div>
-      <div className="text-sm">XP: {data.xp}</div>
+    <div className="inline-flex items-center gap-2 rounded px-3 py-1 text-sm bg-yellow-100">
+      <span>🔥</span>
+      <span>{streak} day streak</span>
     </div>
-  )
+  );
 }
