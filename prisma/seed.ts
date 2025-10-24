@@ -1,36 +1,60 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
-import { ingredients, Row } from "./ingredients";
+// prisma/seed.ts
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
-// ... your data arrays / helpers here (no top-level await)
+const prisma = new PrismaClient();
 
 async function main() {
-for (const [name, category, unit, image, tips] of ingredients) {
-  // Skip any ingredient without a valid name
-  if (!name || typeof name !== "string" || name.trim() === "") continue;
+  console.log("Seeding…");
 
-  // Normalize optionals (Prisma prefers undefined over null)
-  const img = image ?? undefined;
-  const note = tips ?? undefined;
+  // --- Demo user ---
+  const demoEmail = "demo@uci.edu";
+  const demoPass = "password123";
+  const passwordHash = await bcrypt.hash(demoPass, 10);
 
-  await prisma.ingredient.upsert({
-    where: { name: name },       // name is now guaranteed a string
+  await prisma.user.upsert({
+    where: { email: demoEmail },
     update: {},
     create: {
-      name: name,
-      category,
-      // if your Prisma schema has a specific enum for unit, keep your `as any`
-      // or map/cast to the right enum. Also choose a sensible fallback if needed:
-      unit: (unit as any) ?? undefined,
-      image: img as any,
-      tips: note as any,
+      email: demoEmail,
+      password: passwordHash,
+      displayName: "Demo User",
     },
   });
-}
+  console.log("✓ Demo user upserted");
+
+  // --- Minimal ingredients (inline array so we can't 'forget' to import it) ---
+  // [name, category, unit, image, tips]
+  const ingredients: Array<[string, string, string | null, string | null, string | null]> = [
+    ["Eggs", "protein", "piece", null, null],
+    ["Rice", "grain", "cup", null, null],
+    ["Milk", "dairy", "cup", null, null],
+  ];
+
+  for (const [name, category, unit, image, tips] of ingredients) {
+    if (!name || typeof name !== "string" || name.trim() === "") continue;
+
+    await prisma.ingredient.upsert({
+      where: { name },
+      update: {},
+      create: {
+        name,
+        category,
+        // Prisma prefers undefined over null for optional fields
+        unit: (unit ?? undefined) as any,
+        image: (image ?? undefined) as any,
+        tips: (tips ?? undefined) as any,
+      },
+    });
+  }
+  console.log("✓ Ingredients upserted");
+
+  console.log("Seeding complete.");
 }
 
 main()
-  .catch(async (err) => {
+  .catch((err) => {
+    console.error("❌ Seed failed:");
     console.error(err);
     process.exitCode = 1;
   })

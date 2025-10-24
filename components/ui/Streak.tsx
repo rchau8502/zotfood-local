@@ -1,17 +1,8 @@
-"use client";
-
-import { useEffect, useState } from "react";
-
-export default function Streak() {
-  const [streak, setStreak] = useState(0);
-
-  // TODO: replace with real fetch from your DB/session
-  useEffect(() => setStreak(3), []);
-
+export default function Streak({ days = 3 }: { days?: number }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded px-3 py-1 text-sm bg-yellow-100">
-      <span>🔥</span>
-      <span>{streak} day streak</span>
+    <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-ucigold to-amber-400 px-3 py-1.5 text-sm font-medium text-slate-900 ring-1 ring-black/5">
+      <span aria-hidden>🔥</span>
+      <span>{days} day streak</span>
     </div>
-  );
+  )
 }

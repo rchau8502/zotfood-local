@@ -1,39 +1,31 @@
+import Link from "next/link"
 
-import Link from "next/link";
-
-function Card(props: { href: string; title: string; desc: string }) {
+export default function MarketingPage() {
   return (
-    <Link href={props.href} className="rounded-xl border p-5 hover:shadow focus:outline-none focus:ring">
-      <h3 className="text-lg font-semibold">{props.title}</h3>
-      <p className="mt-1 text-sm text-gray-600">{props.desc}</p>
-    </Link>
-  );
-}
-
-export default function Home() {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold">ZotFood — Duolingo for Cooking</h1>
-      <p className="mt-3 text-gray-700">
-        Learn to cook with quick student-friendly recipes, streaks, and micro-lessons. Everything runs locally.
-      </p>
-
-      <ul className="mt-6 list-disc pl-6 text-gray-700">
-        <li>Local SQLite database</li>
-        <li>Filesystem uploads</li>
-        <li>No external APIs</li>
-      </ul>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <Card href="/dashboard" title="Dashboard" desc="See streaks and suggested actions." />
-        <Card href="/learn"     title="Learn"     desc="Micro-lessons to build skills fast." />
-        <Card href="/recipes"   title="Recipes"   desc="Browse, search, and save recipes." />
-        <Card href="/pantry"    title="Pantry"    desc="Track ingredients you have on hand." />
+    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-uciblue to-indigo-700 p-10 text-white shadow-soft">
+      <div className="max-w-2xl space-y-4">
+        <h1 className="text-4xl font-bold tracking-tight">
+          ZotFood — Duolingo for Cooking
+        </h1>
+        <p className="text-white/90">
+          Learn to cook with micro-lessons, budget-friendly recipes, and a pantry-matcher.
+          Everything runs locally on your machine.
+        </p>
+        <div className="flex gap-3">
+          <Link
+            href="/dashboard"
+            className="rounded-xl bg-white px-4 py-2.5 text-slate-900 hover:bg-white/90"
+          >
+            Open dashboard
+          </Link>
+          <Link
+            href="/learn"
+            className="rounded-xl bg-white/10 px-4 py-2.5 hover:bg-white/20"
+          >
+            Start learning
+          </Link>
+        </div>
       </div>
-
-      <p className="mt-8 text-sm text-gray-500">
-        Demo login: <code>demo@uci.edu</code> / <code>password123</code>
-      </p>
-    </div>
-  );
+    </section>
+  )
 }
