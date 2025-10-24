@@ -1,0 +1,7 @@
+node_modules/
+.next/
+.env
+zotfood.db
+uploads/
+pnpm-lock.yaml
+.DS_Store
