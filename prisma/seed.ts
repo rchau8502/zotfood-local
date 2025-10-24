@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
+import { ingredients, Row } from "./ingredients";
 
 // ... your data arrays / helpers here (no top-level await)
 
