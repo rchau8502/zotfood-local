@@ -3,9 +3,25 @@
 @tailwind utilities;
 
 :root {
-  --uci-blue: #0064A4;
-  --uci-gold: #FFC72C;
+  --uci-blue: #0064a4;
+  --uci-gold: #ffbf00;
 }
+
+/* Global body styles can still use @apply */
 body { @apply bg-white text-gray-900; }
-a { @apply text-[color:var(--uci-blue)] hover:underline; }
-.badge { @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[color:var(--uci-blue)]/10 text-[color:var(--uci-blue)]; }
+
+/* Use plain CSS for color variables instead of arbitrary values in @apply */
+a {
+  color: var(--uci-blue);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* Define .badge in a components layer; use normal CSS for colors */
+@layer components {
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+    background-color: rgba(0, 100, 164, 0.10); /* 10% UCI blue */
+    color: var(--uci-blue);
+  }
+}
