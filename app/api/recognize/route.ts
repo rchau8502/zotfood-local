@@ -17,7 +17,8 @@ export async function POST(req: NextRequest){
   const all = await prisma.ingredient.findMany()
 
   for (const ing of all){
-    const syns = SYNONYMS[ing.name] ?? [ing.name]
+    const key = ing.name.toLowerCase()
+    const syns = (SYNONYMS[key] ?? [key]).map(s => s.toLowerCase())
     let hit = 0
     for (const t of tokens){
       if (syns.includes(t)) hit += 1
