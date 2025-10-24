@@ -1,3 +1,9 @@
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+
+// ... your data arrays / helpers here (no top-level await)
+
+async function main() {
 for (const [name, category, unit, image, tips] of ingredients) {
   // Skip any ingredient without a valid name
   if (!name || typeof name !== "string" || name.trim() === "") continue;
@@ -20,3 +26,13 @@ for (const [name, category, unit, image, tips] of ingredients) {
     },
   });
 }
+}
+
+main()
+  .catch(async (err) => {
+    console.error(err);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
